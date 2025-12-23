@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { supabase } from '@/lib/supabase'
 import { Post } from '@/types'
 import Link from 'next/link'
 import { Search, Tag, Unlock, Lock, Clock, Filter, X } from 'lucide-react'
 import { useSearchParams, useRouter } from 'next/navigation'
 
-export default function SearchPage() {
+function SearchContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
 
@@ -95,17 +95,18 @@ export default function SearchPage() {
         // Update URL params
         const params = new URLSearchParams()
         if (query) params.set('q', query)
-        if (filters.tag) params.set('tag', filters.tag)
-        if (filters.ctf) params.set('ctf', filters.ctf)
+        else params.delete('q')
 
-        // This causes full refresh if used directly in effect without care, 
-        // using replaceState is better to avoid effect loops if not carefully managed.
-        // We'll skip router.push here for smooth typing and just rely on state.
-        // But if we want shareable URLs, we should push. 
-        // For now, let's just search based on state.
+        if (filters.tag) params.set('tag', filters.tag)
+        else params.delete('tag')
+
+        if (filters.ctf) params.set('ctf', filters.ctf)
+        else params.delete('ctf')
+
+        router.replace(`/search?${params.toString()}`, { scroll: false })
 
         return () => clearTimeout(debounce)
-    }, [query, filters])
+    }, [query, filters, router])
 
     const clearFilters = () => {
         setQuery('')
@@ -115,8 +116,8 @@ export default function SearchPage() {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-5xl">
-            <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
-                <Search className="h-8 w-8 text-blue-500" />
+            <h1 className="text-3xl font-bold mb-8 flex items-center gap-3 text-foreground">
+                <Search className="h-8 w-8 text-primary" />
                 Search Writeups
             </h1>
 
@@ -127,25 +128,25 @@ export default function SearchPage() {
                         <input
                             type="text"
                             placeholder="Search by title..."
-                            className="w-full bg-gray-900 border border-gray-800 rounded-lg pl-10 pr-4 py-3 focus:border-blue-500 focus:outline-none"
+                            className="w-full bg-background border border-input rounded-lg pl-10 pr-4 py-3 focus:border-primary focus:outline-none text-foreground placeholder:text-muted-foreground"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                         />
-                        <Search className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                        <Search className="absolute left-3 top-3.5 h-5 w-5 text-muted-foreground" />
                     </div>
                 </div>
 
                 {/* Filters Sidebar */}
                 <div className="md:col-span-1 space-y-6">
-                    <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
+                    <div className="bg-muted/30 p-4 rounded-lg border border-border">
                         <div className="flex justify-between items-center mb-4">
-                            <h3 className="font-semibold text-gray-300 flex items-center gap-2">
+                            <h3 className="font-semibold text-foreground flex items-center gap-2">
                                 <Filter className="h-4 w-4" /> Filters
                             </h3>
                             {(query || filters.tag || filters.ctf || filters.category) && (
                                 <button
                                     onClick={clearFilters}
-                                    className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                                    className="text-xs text-destructive hover:text-destructive/80 flex items-center gap-1"
                                 >
                                     <X className="h-3 w-3" /> Clear
                                 </button>
@@ -154,9 +155,9 @@ export default function SearchPage() {
 
                         {/* Category Filter */}
                         <div className="mb-4">
-                            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Category</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Category</label>
                             <select
-                                className="w-full bg-gray-950 border border-gray-800 rounded px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+                                className="w-full bg-background border border-input rounded px-2 py-1.5 text-sm focus:border-primary focus:outline-none text-foreground"
                                 value={filters.category}
                                 onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
                             >
@@ -169,9 +170,9 @@ export default function SearchPage() {
 
                         {/* CTF Filter */}
                         <div className="mb-4">
-                            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">CTF Event</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">CTF Event</label>
                             <select
-                                className="w-full bg-gray-950 border border-gray-800 rounded px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+                                className="w-full bg-background border border-input rounded px-2 py-1.5 text-sm focus:border-primary focus:outline-none text-foreground"
                                 value={filters.ctf}
                                 onChange={(e) => setFilters(prev => ({ ...prev, ctf: e.target.value }))}
                             >
@@ -184,9 +185,9 @@ export default function SearchPage() {
 
                         {/* Tag Filter */}
                         <div>
-                            <label className="block text-xs font-medium text-gray-500 mb-2 uppercase tracking-wider">Tag</label>
+                            <label className="block text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wider">Tag</label>
                             <select
-                                className="w-full bg-gray-950 border border-gray-800 rounded px-2 py-1.5 text-sm focus:border-blue-500 focus:outline-none"
+                                className="w-full bg-background border border-input rounded px-2 py-1.5 text-sm focus:border-primary focus:outline-none text-foreground"
                                 value={filters.tag}
                                 onChange={(e) => setFilters(prev => ({ ...prev, tag: e.target.value }))}
                             >
@@ -203,18 +204,18 @@ export default function SearchPage() {
             {/* Results */}
             <div className="space-y-4">
                 {loading ? (
-                    <div className="text-center py-12 text-gray-500">Searching...</div>
+                    <div className="text-center py-12 text-muted-foreground">Searching...</div>
                 ) : posts.length === 0 ? (
-                    <div className="text-center py-12 bg-gray-900/30 rounded-lg border border-gray-800 border-dashed">
-                        <p className="text-gray-500">No writeups found matching your criteria.</p>
+                    <div className="text-center py-12 bg-muted/30 rounded-lg border border-border border-dashed">
+                        <p className="text-muted-foreground">No writeups found matching your criteria.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {posts.map((post) => (
                             <Link key={post.id} href={`/posts/${post.id}`} className="block group">
-                                <div className="bg-gray-900/50 border border-gray-800 rounded-lg p-6 h-full hover:border-blue-500/50 transition-colors">
+                                <div className="bg-card border border-border rounded-lg p-6 h-full hover:border-primary/50 transition-colors">
                                     <div className="flex justify-between items-start mb-4">
-                                        <div className="flex items-center space-x-2 text-xs text-blue-400">
+                                        <div className="flex items-center space-x-2 text-xs text-primary">
                                             <span className="uppercase tracking-wider font-semibold">{post.category || 'Uncategorized'}</span>
                                         </div>
                                         {post.is_public ? (
@@ -224,29 +225,29 @@ export default function SearchPage() {
                                         )}
                                     </div>
 
-                                    <h2 className="text-xl font-bold mb-2 group-hover:text-blue-400 transition-colors line-clamp-2">
+                                    <h2 className="text-xl font-bold mb-2 text-card-foreground group-hover:text-primary transition-colors line-clamp-2">
                                         {post.title}
                                     </h2>
 
-                                    <div className="text-sm text-gray-500 mb-4 line-clamp-1">
+                                    <div className="text-sm text-muted-foreground mb-4 line-clamp-1">
                                         {post.ctf_name}
                                     </div>
 
                                     {post.tags && post.tags.length > 0 && (
                                         <div className="flex flex-wrap gap-2 mb-4">
                                             {post.tags.slice(0, 3).map(tag => (
-                                                <span key={tag} className="bg-gray-800 text-gray-400 text-xs px-2 py-1 rounded-full flex items-center">
+                                                <span key={tag} className="bg-muted text-muted-foreground text-xs px-2 py-1 rounded-full flex items-center">
                                                     <Tag className="h-3 w-3 mr-1" />
                                                     {tag}
                                                 </span>
                                             ))}
                                             {post.tags.length > 3 && (
-                                                <span className="text-xs text-gray-500">+{post.tags.length - 3}</span>
+                                                <span className="text-xs text-muted-foreground">+{post.tags.length - 3}</span>
                                             )}
                                         </div>
                                     )}
 
-                                    <div className="flex items-center text-xs text-gray-500 mt-auto pt-4 border-t border-gray-800/50">
+                                    <div className="flex items-center text-xs text-muted-foreground mt-auto pt-4 border-t border-border">
                                         <Clock className="h-3 w-3 mr-1" />
                                         {new Date(post.created_at).toLocaleDateString()}
                                     </div>
@@ -257,5 +258,17 @@ export default function SearchPage() {
                 )}
             </div>
         </div>
+    )
+}
+
+export default function SearchPage() {
+    return (
+        <Suspense fallback={
+            <div className="container mx-auto px-4 py-8 text-center text-muted-foreground">
+                <p>Loading search...</p>
+            </div>
+        }>
+            <SearchContent />
+        </Suspense>
     )
 }

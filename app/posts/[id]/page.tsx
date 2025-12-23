@@ -10,8 +10,13 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         return { title: 'Post Not Found' }
     }
 
-    const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-    const ogUrl = new URL(`${appUrl}/api/og`)
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL
+        ? process.env.NEXT_PUBLIC_APP_URL
+        : (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')
+
+    // Ensure protocol
+    const finalUrl = appUrl.startsWith('http') ? appUrl : `https://${appUrl}`
+    const ogUrl = new URL(`${finalUrl}/api/og`)
     ogUrl.searchParams.set('title', post.title)
     if (post.category) ogUrl.searchParams.set('category', post.category)
 

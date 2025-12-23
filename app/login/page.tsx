@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from 'react'
-import { supabase } from '@/lib/supabase'
+import { createClientComponentClient as createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 
 export default function Login() {
@@ -10,15 +10,26 @@ export default function Login() {
     const [message, setMessage] = useState('')
     const router = useRouter()
 
+    // Create Supabase client inside component
+    const supabase = createClient()
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
         setLoading(true)
         setMessage('')
 
+        // Determine redirect URL: prefer env var (prod), fallback to location.origin (dev/preview)
+        let redirectUrl = process.env.NEXT_PUBLIC_APP_URL || location.origin
+        if (!redirectUrl.startsWith('http')) {
+            redirectUrl = `https://${redirectUrl}`
+        }
+        // Remove trailing slash if present to avoid dry/auth//callback
+        redirectUrl = redirectUrl.replace(/\/$/, '')
+
         const { error } = await supabase.auth.signInWithOtp({
             email,
             options: {
-                emailRedirectTo: `${location.origin}/auth/callback`,
+                emailRedirectTo: `${redirectUrl}/auth/callback`,
             },
         })
 

@@ -86,7 +86,7 @@ export default function PostDetail({ id }: { id: string }) {
     const canViewContent = post.is_public || (currentUserId === post.author_id)
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <div className="container mx-auto px-4 py-8 max-w-7xl">
             <div className="mb-8 border-b border-border pb-8">
                 <div className="flex items-center space-x-2 text-sm text-primary mb-3">
                     <span className="uppercase tracking-wider font-semibold">{post.category || 'Uncategorized'}</span>
@@ -165,9 +165,9 @@ export default function PostDetail({ id }: { id: string }) {
                 )}
             </div>
 
-            <div className="mt-8 flex gap-8">
+            <div className="mt-8 flex gap-12 justify-between">
                 {/* Main Content */}
-                <div className="flex-1 w-full min-w-0">
+                <div className="flex-1 w-full min-w-0 max-w-5xl">
                     {canViewContent ? (
                         <PostContent content={post.content} />
                     ) : (

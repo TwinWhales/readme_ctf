@@ -48,12 +48,20 @@ export default function Home() {
       setUserId(user ? user.id : null)
 
       const { data, error } = await supabase
-        .from('posts')
+        .from('posts_view')
         .select('*')
         .order('created_at', { ascending: false })
 
       if (error) {
-        console.error('Error fetching posts:', error)
+        // Fallback to table if view doesn't exist yet, to avoid crash if user didn't run SQL
+        console.warn('View might not exist, trying table directly:', error)
+        const { data: tableData, error: tableError } = await supabase
+          .from('posts')
+          .select('*')
+          .order('created_at', { ascending: false })
+
+        if (tableError) console.error('Error fetching posts:', tableError)
+        else setPosts(tableData as Post[])
       } else {
         setPosts(data as Post[])
       }

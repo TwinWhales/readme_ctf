@@ -32,9 +32,9 @@ function SearchContent() {
     // Fetch available filters
     useEffect(() => {
         const fetchFilters = async () => {
-            const { data: tagsData } = await supabase.from('posts').select('tags')
-            const { data: ctfData } = await supabase.from('posts').select('ctf_name')
-            const { data: catData } = await supabase.from('posts').select('category')
+            const { data: tagsData } = await supabase.from('posts_view').select('tags')
+            const { data: ctfData } = await supabase.from('posts_view').select('ctf_name')
+            const { data: catData } = await supabase.from('posts_view').select('category')
 
             if (tagsData) {
                 const allTags = tagsData.flatMap(p => p.tags || [])
@@ -58,7 +58,7 @@ function SearchContent() {
             setLoading(true)
 
             let dbQuery = supabase
-                .from('posts')
+                .from('posts_view')
                 .select('*')
                 .order('created_at', { ascending: false })
 

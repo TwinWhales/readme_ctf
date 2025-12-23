@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { createClientComponentClient as createClient } from '@/lib/supabase/client'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,6 +12,7 @@ function CallbackContent() {
     const code = searchParams.get('code')
     const next = searchParams.get('next') || '/'
 
+    const supabase = createClient()
     const processingRef = useRef(false)
 
     useEffect(() => {
@@ -31,7 +32,7 @@ function CallbackContent() {
         } else {
             router.push(next)
         }
-    }, [code, next, router])
+    }, [code, next, router, supabase])
 
     return (
         <div className="flex min-h-screen items-center justify-center bg-background text-muted-foreground">

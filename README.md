@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CTF Writeup Platform
 
-## Getting Started
+A modern, secure, and feature-rich platform for sharing and organizing Capture The Flag (CTF) writeups. Built with Next.js 15, Supabase, and TailwindCSS.
 
-First, run the development server:
+## 🚀 Development Roadmap & Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### Phase 1: Core Architecture & Authentication (Completed)
+- **Project Setup**: Implemented Next.js 15 App Router structure with TypeScript.
+- **Authentication**: Integrated Supabase Auth (Email Magic Link) with GitHub-style profile management.
+- **Security**: Applied Row Level Security (RLS) policies for secure data access.
+- **Core Pages**:
+  - Home Dashboard (Writeup Feed)
+  - Post Detail View
+  - Profile Page
+  - Login/Auth Pages
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Phase 2: Content & Discovery (Completed)
+- **Rich Text Editor**:
+  - Integrated **Tiptap** editor for writing writeups.
+  - Custom image upload extension handling Supabase Storage.
+  - Syntax highlighting for code blocks (highlight.js).
+- **Search System**:
+  - Dedicated Search Page with filtering by **Tags** and **CTF Name**.
+  - Real-time "Live Search" dropdown in the navigation bar.
+- **Comments**:
+  - Threaded comment system for community interaction.
+- **Home Page**:
+  - Dynamic preview cards showing headers (H1-H3) and metadata.
+  - "Private" post visibility masking.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Phase 3: UI Enhancements (Completed)
+- **Dark/Light Mode**:
+  - Seamless theme switching (System/Light/Dark) using `next-themes`.
+  - Consistent styling across all components.
+- **Advanced Filtering**:
+  - Added **Category** filtering (Web, Pwn, Rev, etc.) to the search system.
+  - Updated DB queries for combined filter logic.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Phase 4: UX Polish & Social Features (Completed)
+- **Interactions**:
+  - **Likes & Bookmarks** with optimistic UI updates.
+  - Track user engagement on writeups.
+- **Navigation**:
+  - **Table of Contents (TOC)**: Auto-generated sidebar navigation for long writeups (Desktop).
+  - Responsive layout adjustments.
+- **Social Sharing**:
+  - **Dynamic Open Graph (OG) Images**: Auto-generated social preview images via `@vercel/og`.
+  - Displays title, category, and site branding on link sharing.
+- **User Activity**:
+  - **Contribution Graph**: GitHub-style heatmap on Profile page showing writeup activity over the last year.
+- **Challenge Files**:
+  - Dedicated UI for external challenge file links in Write/Edit/View pages.
 
-## Learn More
+## 🛠 Tech Stack
 
-To learn more about Next.js, take a look at the following resources:
+- **Framework**: [Next.js 15 (App Router)](https://nextjs.org/)
+- **Language**: TypeScript
+- **Styling**: TailwindCSS, `clsx`, `tailwind-merge`
+- **Database & Auth**: [Supabase](https://supabase.com/)
+- **Editor**: [Tiptap](https://tiptap.dev/)
+- **Icons**: Lucide React
+- **Theme**: `next-themes`
+- **Visualization**: `react-activity-calendar`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📦 Installation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables in `.env.local`:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   NEXT_PUBLIC_APP_URL=http://localhost:3000
+   ```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
 
-## Deploy on Vercel
+## � License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is open source and available under the [MIT License](LICENSE).

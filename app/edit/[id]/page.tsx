@@ -84,6 +84,26 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
             router.refresh()
         }
         setLoading(false)
+        setLoading(false)
+    }
+
+    const handleDelete = async () => {
+        if (!confirm('Are you sure you want to delete this writeup? This action cannot be undone.')) return
+        
+        setLoading(true)
+        const { error } = await supabase
+            .from('posts')
+            .delete()
+            .eq('id', id)
+            .eq('author_id', (await supabase.auth.getUser()).data.user?.id)
+
+        if (error) {
+            alert('Failed to delete: ' + error.message)
+            setLoading(false)
+        } else {
+            router.push('/')
+            router.refresh()
+        }
     }
 
     if (loading) return <div className="p-8 text-center text-gray-500">Loading editor...</div>
@@ -179,14 +199,23 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                     </label>
                 </div>
 
-                <div className="flex justify-end pt-4 space-x-4">
+                <div className="flex justify-between pt-4">
                     <button
                         type="button"
-                        onClick={() => router.back()}
-                        className="text-gray-400 hover:text-white px-4 py-2"
+                        onClick={handleDelete}
+                        className="text-red-400 hover:text-red-300 px-4 py-2 flex items-center space-x-2 transition-colors disabled:opacity-50"
+                        disabled={loading}
                     >
-                        Cancel
+                        <span>Delete Post</span>
                     </button>
+                    <div className="flex space-x-4">
+                        <button
+                            type="button"
+                            onClick={() => router.back()}
+                            className="text-gray-400 hover:text-white px-4 py-2"
+                        >
+                            Cancel
+                        </button>
                     <button
                         type="submit"
                         disabled={loading}
@@ -194,6 +223,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                     >
                         {loading ? 'Saving...' : 'Save Changes'}
                     </button>
+                    </div>
                 </div>
             </form>
         </div>

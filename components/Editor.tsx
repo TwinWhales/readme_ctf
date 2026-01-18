@@ -6,7 +6,7 @@ import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
 import { Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Link as LinkIcon, Image as ImageIcon, Undo, Redo } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
-import { useCallback } from 'react'
+import { useCallback, useEffect } from 'react'
 
 interface EditorProps {
     content: string
@@ -110,6 +110,13 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
             onChange(editor.getHTML())
         },
     })
+
+    // Update editor content when content prop changes (e.g. from Markdown import)
+    useEffect(() => {
+        if (editor && content && editor.getHTML() !== content) {
+            editor.commands.setContent(content)
+        }
+    }, [editor, content])
 
     const setLink = useCallback(() => {
         if (!editor) return

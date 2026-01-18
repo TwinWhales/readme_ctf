@@ -49,12 +49,19 @@ export default function Home() {
 
       const { data, error } = await supabase
         .from('posts_view')
-        .select('*')
+        .select(`
+          *,
+          author:profiles!posts_author_id_fkey(username)
+        `)
         .order('created_at', { ascending: false })
 
       if (error) {
         // Fallback to table if view doesn't exist yet, to avoid crash if user didn't run SQL
+        // and if view fails, we try fetching plain posts (though author join might fail if not set up)
         console.warn('View might not exist, trying table directly:', error)
+          
+        // Since View failed, likely no advanced join on View possible or View missing. 
+        // Try fallback to just posts table (no author name for now in fallback to be safe)
         const { data: tableData, error: tableError } = await supabase
           .from('posts')
           .select('*')
@@ -63,7 +70,7 @@ export default function Home() {
         if (tableError) console.error('Error fetching posts:', tableError)
         else setPosts(tableData as Post[])
       } else {
-        setPosts(data as Post[])
+        setPosts(data as any[]) // Type casting as join returns nested object
       }
       setLoading(false)
     }
@@ -117,7 +124,18 @@ export default function Home() {
                 )}
 
                 <div className="flex items-center justify-between text-xs text-muted-foreground mt-auto pt-4 border-t border-border">
-                  <div className="flex items-center space-x-1">
+                  <div className="flex items-center space-x-2">
+                    {/* @ts-ignore */}
+                    {post.author?.username && (
+                      <>
+                        <div className="flex items-center space-x-1">
+                            <User className="h-3 w-3" />
+                            {/* @ts-ignore */}
+                            <span className="font-medium text-foreground/80">{post.author.username}</span>
+                        </div>
+                        <span>&bull;</span>
+                      </>
+                    )}
                     {post.ctf_name && <span>{post.ctf_name}</span>}
                   </div>
                   <div className="flex items-center space-x-1">

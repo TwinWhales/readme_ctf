@@ -19,12 +19,22 @@ export default function Login() {
         setMessage('')
 
         // Determine redirect URL: prefer env var (prod), fallback to location.origin (dev/preview)
+        // Determine redirect URL:
+        // If we are on localhost, always use location.origin to ensure local testing works
+        // Otherwise, use the env var (production)
         let redirectUrl = process.env.NEXT_PUBLIC_APP_URL || location.origin
+        
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+            redirectUrl = location.origin
+        }
+
         if (!redirectUrl.startsWith('http')) {
             redirectUrl = `https://${redirectUrl}`
         }
         // Remove trailing slash if present to avoid dry/auth//callback
         redirectUrl = redirectUrl.replace(/\/$/, '')
+
+        console.log('🔗 Debug: Sending magic link with redirect URL:', `${redirectUrl}/auth/callback`) // Debug log
 
         const { error } = await supabase.auth.signInWithOtp({
             email,

@@ -17,6 +17,9 @@ export interface Post {
     file_url: string | null
     created_at: string
     updated_at: string | null
+    author?: {
+        username: string | null
+    }
 }
 
 export interface Like {

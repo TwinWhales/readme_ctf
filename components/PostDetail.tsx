@@ -14,6 +14,7 @@ import TableOfContents from '@/components/TableOfContents'
 
 export default function PostDetail({ id }: { id: string }) {
     const [post, setPost] = useState<Post | null>(null)
+    const [authorName, setAuthorName] = useState<string>('Unknown User')
     const [loading, setLoading] = useState(true)
     const [currentUserId, setCurrentUserId] = useState<string | null>(null)
 
@@ -72,6 +73,19 @@ export default function PostDetail({ id }: { id: string }) {
         getData()
     }, [id])
 
+    useEffect(() => {
+        if (post?.author_id) {
+            supabase
+                .from('profiles')
+                .select('username')
+                .eq('id', post.author_id)
+                .single()
+                .then(({ data }) => {
+                    if (data) setAuthorName(data.username)
+                })
+        }
+    }, [post])
+
     if (loading) return <div className="p-12 text-center text-gray-500">Loading writeup...</div>
 
     if (!post) {
@@ -103,6 +117,9 @@ export default function PostDetail({ id }: { id: string }) {
                 <div className="flex items-center justify-between text-muted-foreground text-sm">
                     <div className="flex items-center space-x-6">
                         <div className="flex items-center space-x-2">
+                            <User className="h-4 w-4" />
+                            <span>{authorName}</span>
+                            <span>&bull;</span>
                             <Clock className="h-4 w-4" />
                             <span>{new Date(post.created_at).toLocaleDateString()}</span>
                         </div>

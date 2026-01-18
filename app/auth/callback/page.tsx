@@ -21,10 +21,26 @@ function CallbackContent() {
             processingRef.current = true
 
             const handleCallback = async () => {
-                const { error } = await supabase.auth.exchangeCodeForSession(code)
+                const { data, error } = await supabase.auth.exchangeCodeForSession(code)
                 if (error) {
                     console.error('Auth error:', error)
                 }
+                
+                // Check if user has a username
+                if (data?.user) {
+                    const { data: profile } = await supabase
+                        .from('profiles')
+                        .select('username')
+                        .eq('id', data.user.id)
+                        .single()
+                    
+                    if (!profile?.username) {
+                        router.push('/profile?setup=true')
+                        router.refresh()
+                        return
+                    }
+                }
+
                 router.push(next)
                 router.refresh()
             }

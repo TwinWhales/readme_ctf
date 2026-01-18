@@ -4,7 +4,10 @@ import { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Editor from '@/components/Editor'
+import { marked } from 'marked'
 
+
+// Re-writing the component logic to include import feature
 export default function WritePage() {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
@@ -18,7 +21,38 @@ export default function WritePage() {
         file_url: ''
     })
 
+    const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (!file) return
+
+        const reader = new FileReader()
+        reader.onload = async (event) => {
+            const text = event.target?.result as string
+            if (text) {
+                // Parse markdown to HTML
+                const html = await marked.parse(text)
+
+                // Try to extract title from # Heading
+                let title = formData.title
+                const titleMatch = text.match(/^#\s+(.+)$/m)
+                if (titleMatch && !title) {
+                    title = titleMatch[1].trim()
+                }
+
+                setFormData(prev => ({
+                    ...prev,
+                    content: html,
+                    title: title
+                }))
+            }
+        }
+        reader.readAsText(file)
+        // Reset input
+        e.target.value = ''
+    }
+
     const handleSubmit = async (e: React.FormEvent) => {
+        // ... (existing submit logic)
         e.preventDefault()
         setLoading(true)
 
@@ -52,7 +86,25 @@ export default function WritePage() {
 
     return (
         <div className="container mx-auto px-4 py-8 max-w-3xl">
-            <h1 className="text-3xl font-bold mb-8">Write New Writeup</h1>
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold">Write New Writeup</h1>
+                <div>
+                    <input
+                        type="file"
+                        accept=".md"
+                        className="hidden"
+                        id="md-upload"
+                        onChange={handleFileUpload}
+                    />
+                    <label
+                        htmlFor="md-upload"
+                        className="cursor-pointer inline-flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium py-2 px-4 rounded-md transition-colors shadow-sm"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="17 8 12 3 7 8" /><line x1="12" x2="12" y1="3" y2="15" /></svg>
+                        Import Markdown
+                    </label>
+                </div>
+            </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

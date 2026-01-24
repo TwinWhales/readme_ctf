@@ -3,13 +3,15 @@
 import { useEffect, useState, use } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
-import { Post } from '@/types'
+import { Post, Category } from '@/types'
 import Editor from '@/components/Editor'
 
 export default function EditPage({ params }: { params: Promise<{ id: string }> }) {
     const router = useRouter()
     const { id } = use(params)
     const [loading, setLoading] = useState(true)
+    const [isStudy, setIsStudy] = useState(false)
+    const [categories, setCategories] = useState<Category[]>([])
     const [formData, setFormData] = useState({
         title: '',
         ctf_name: '',
@@ -22,6 +24,10 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
 
     useEffect(() => {
         const getData = async () => {
+             // Fetch Categories
+             const { data: catData } = await supabase.from('categories').select('*').order('name')
+             if (catData) setCategories(catData as Category[])
+
             const { data: { user } } = await supabase.auth.getUser()
             if (!user) {
                 router.push('/login')
@@ -53,9 +59,16 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                 category: post.category || '',
                 content: post.content,
                 is_public: post.is_public,
-                tags: post.tags ? post.tags.join(', ') : '',
+                // Filter out 'Study' for display in input, but set flag
+                tags: post.tags ? post.tags.filter((t: string) => t !== 'Study').join(', ') : '',
                 file_url: post.file_url || ''
             })
+            
+            // Check if it's a Study Note based on tags
+            if (post.tags && post.tags.includes('Study')) {
+                setIsStudy(true)
+            }
+            
             setLoading(false)
         }
 
@@ -72,7 +85,11 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
             category: formData.category,
             content: formData.content,
             is_public: formData.is_public,
-            tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+            tags: (() => {
+                const tags = formData.tags.split(',').map(t => t.trim()).filter(Boolean);
+                if (isStudy && !tags.includes('Study')) tags.push('Study');
+                return tags;
+            })(),
             file_url: formData.file_url || null,
             updated_at: new Date().toISOString()
         }).eq('id', id)
@@ -139,31 +156,41 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Category</label>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                            Category
+                        </label>
                         <select
                             className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
                             value={formData.category}
                             onChange={e => setFormData({ ...formData, category: e.target.value })}
                         >
                             <option value="">Select Category</option>
-                            <option value="Web">Web</option>
-                            <option value="Pwnable">Pwnable</option>
-                            <option value="Reversing">Reversing</option>
-                            <option value="Crypto">Crypto</option>
-                            <option value="Forensics">Forensics</option>
-                            <option value="Misc">Misc</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.name}>{cat.name}</option>
+                            ))}
                         </select>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Tags (comma separated)</label>
-                        <input
-                            type="text"
-                            className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
-                            placeholder="xss, sqli, heap"
-                            value={formData.tags}
-                            onChange={e => setFormData({ ...formData, tags: e.target.value })}
-                        />
+                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                            Tags (comma separated)
+                        </label>
+                        <div className="relative">
+                            <input
+                                type="text"
+                                className={`w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none ${isStudy ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                placeholder="xss, sqli, heap"
+                                value={formData.tags}
+                                onChange={e => setFormData({ ...formData, tags: e.target.value })}
+                                disabled={isStudy}
+                            />
+                            {isStudy && (
+                                <div className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-900/50 text-blue-200 text-xs px-2 py-1 rounded border border-blue-800 flex items-center shadow-sm">
+                                    <span className="mr-1">🔒</span> 
+                                    Study Tag Applied
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 

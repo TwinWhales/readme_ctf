@@ -3,6 +3,14 @@ export interface Profile {
     username: string | null
     avatar_url: string | null
     created_at: string
+    role?: 'user' | 'manager' | 'admin'
+}
+
+export interface Category {
+    id: string
+    name: string
+    icon: string
+    created_at: string
 }
 
 export interface Post {
@@ -17,6 +25,7 @@ export interface Post {
     file_url: string | null
     created_at: string
     updated_at: string | null
+    username?: string // From posts_view
     author?: {
         username: string | null
     }

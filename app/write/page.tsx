@@ -1,16 +1,44 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
 import Editor from '@/components/Editor'
 import { marked } from 'marked'
+import { Category } from '@/types'
 
 
 // Re-writing the component logic to include import feature
 export default function WritePage() {
     const router = useRouter()
     const [loading, setLoading] = useState(false)
+    // New state for Post Type: 'writeup' | 'study'
+    const [postType, setPostType] = useState<'writeup' | 'study'>('writeup')
+    const [categories, setCategories] = useState<Category[]>([])
+    
+    useEffect(() => {
+        const fetchCategories = async () => {
+            const { data } = await supabase.from('categories').select('*').order('name')
+            if (data) setCategories(data as Category[])
+        }
+        fetchCategories()
+    }, [])
+
+    // Helper to get current semester string
+    const getCurrentSemester = () => {
+        const date = new Date()
+        const year = date.getFullYear()
+        const month = date.getMonth() + 1 // 1-12
+        // Simple logic: Mar-Aug = 1st Semester, Sep-Feb = 2nd Semester? 
+        // Or simple 1H (Jan-Jun) / 2H (Jul-Dec)?
+        // User asked for "1st Semester" / "2nd Semester".
+        // Let's assume standard academic semester roughly.
+        // Actually often: 1st (Mar-Jun), Summer, 2nd (Sep-Dec), Winter.
+        // Let's stick to simple 1st (Jan-Jun) / 2nd (Jul-Dec) for now or just 1st/2nd.
+        const semester = month <= 6 ? "1st Semester" : "2nd Semester"
+        return `${year} ${semester}`
+    }
+
     const [formData, setFormData] = useState({
         title: '',
         ctf_name: '',
@@ -20,6 +48,16 @@ export default function WritePage() {
         tags: '',
         file_url: ''
     })
+
+    // Update ctf_name when postType changes
+    const handlePostTypeChange = (type: 'writeup' | 'study') => {
+        setPostType(type)
+        if (type === 'study') {
+            setFormData(prev => ({ ...prev, ctf_name: getCurrentSemester() }))
+        } else {
+            setFormData(prev => ({ ...prev, ctf_name: '' })) // Reset or keep previous? Resetting is safer.
+        }
+    }
 
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
@@ -52,7 +90,6 @@ export default function WritePage() {
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        // ... (existing submit logic)
         e.preventDefault()
         setLoading(true)
 
@@ -64,16 +101,28 @@ export default function WritePage() {
             return
         }
 
-        const { error } = await supabase.from('posts').insert({
+        // Prepare tags: split string, trim, filter empty
+        let tagsArray = formData.tags.split(',').map(t => t.trim()).filter(Boolean)
+        
+        // Auto-add "Study" tag if Study Note
+        if (postType === 'study' && !tagsArray.includes('Study')) {
+            tagsArray.push('Study')
+        }
+
+        // Prepare payload
+        const payload = {
             title: formData.title,
-            ctf_name: formData.ctf_name,
+            // Use the form data ctf_name (which is pre-filled with Semester for study notes)
+            ctf_name: formData.ctf_name, 
             category: formData.category,
             content: formData.content,
             is_public: formData.is_public,
-            tags: formData.tags.split(',').map(t => t.trim()).filter(Boolean),
+            tags: tagsArray,
             author_id: user.id,
             file_url: formData.file_url || null
-        })
+        }
+
+        const { error } = await supabase.from('posts').insert(payload)
 
         if (error) {
             alert('Error creating post: ' + error.message)
@@ -87,7 +136,7 @@ export default function WritePage() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-3xl">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">Write New Writeup</h1>
+                <h1 className="text-3xl font-bold">Write New Post</h1>
                 <div>
                     <input
                         type="file"
@@ -107,6 +156,36 @@ export default function WritePage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+                
+                {/* Post Type Selector */}
+                <div className="bg-muted/30 p-4 rounded-lg border border-border">
+                    <label className="block text-sm font-medium text-muted-foreground mb-3">Post Type</label>
+                    <div className="flex space-x-4">
+                        <label className={`flex-1 flex items-center justify-center p-3 rounded-md border cursor-pointer transition-all ${postType === 'writeup' ? 'bg-primary/10 border-primary text-primary font-bold' : 'bg-card border-border hover:border-gray-500'}`}>
+                            <input 
+                                type="radio" 
+                                name="postType" 
+                                value="writeup" 
+                                checked={postType === 'writeup'} 
+                                onChange={() => handlePostTypeChange('writeup')}
+                                className="hidden" 
+                            />
+                            CTF Writeup
+                        </label>
+                        <label className={`flex-1 flex items-center justify-center p-3 rounded-md border cursor-pointer transition-all ${postType === 'study' ? 'bg-primary/10 border-primary text-primary font-bold' : 'bg-card border-border hover:border-gray-500'}`}>
+                            <input 
+                                type="radio" 
+                                name="postType" 
+                                value="study" 
+                                checked={postType === 'study'} 
+                                onChange={() => handlePostTypeChange('study')}
+                                className="hidden" 
+                            />
+                            Study Note
+                        </label>
+                    </div>
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
@@ -119,45 +198,65 @@ export default function WritePage() {
                         />
                     </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">CTF Name</label>
-                        <input
-                            type="text"
-                            className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
-                            placeholder="e.g. DEFCON 2024"
-                            value={formData.ctf_name}
-                            onChange={e => setFormData({ ...formData, ctf_name: e.target.value })}
-                        />
-                    </div>
+                    {postType === 'writeup' && (
+                        <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1">CTF Name</label>
+                            <input
+                                type="text"
+                                className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                                placeholder="e.g. DEFCON 2024"
+                                value={formData.ctf_name}
+                                onChange={e => setFormData({ ...formData, ctf_name: e.target.value })}
+                            />
+                        </div>
+                    )}
+                    {postType === 'study' && (
+                         <div>
+                            <label className="block text-sm font-medium text-gray-400 mb-1">Semester / Period</label>
+                             <input
+                                type="text"
+                                className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                                value={formData.ctf_name}
+                                onChange={e => setFormData({ ...formData, ctf_name: e.target.value })}
+                                placeholder="e.g. 2025 1st Semester"
+                            />
+                         </div>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Category</label>
+                        <label className="block text-sm font-medium text-gray-400 mb-1">Category (Room)</label>
                         <select
                             className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
                             value={formData.category}
                             onChange={e => setFormData({ ...formData, category: e.target.value })}
                         >
                             <option value="">Select Category</option>
-                            <option value="Web">Web</option>
-                            <option value="Pwnable">Pwnable</option>
-                            <option value="Reversing">Reversing</option>
-                            <option value="Crypto">Crypto</option>
-                            <option value="Forensics">Forensics</option>
-                            <option value="Misc">Misc</option>
+                            {categories.map(cat => (
+                                <option key={cat.id} value={cat.name}>{cat.name}</option>
+                            ))}
                         </select>
                     </div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-400 mb-1">Tags (comma separated)</label>
-                        <input
-                            type="text"
-                            className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
-                            placeholder="xss, sqli, heap"
-                            value={formData.tags}
-                            onChange={e => setFormData({ ...formData, tags: e.target.value })}
-                        />
+                        <div className="relative">
+                            <input
+                                type="text"
+                                className={`w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none ${postType === 'study' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                placeholder="xss, sqli, heap"
+                                value={formData.tags}
+                                onChange={e => setFormData({ ...formData, tags: e.target.value })}
+                                disabled={postType === 'study'}
+                            />
+                            {postType === 'study' && (
+                                <div className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-900/50 text-blue-200 text-xs px-2 py-1 rounded border border-blue-800 flex items-center shadow-sm">
+                                    <span className="mr-1">🔒</span> 
+                                    Study Tag Applied
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -199,7 +298,7 @@ export default function WritePage() {
                         disabled={loading}
                         className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition-colors disabled:opacity-50"
                     >
-                        {loading ? 'Publishing...' : 'Publish Writeup'}
+                        {loading ? 'Publishing...' : 'Publish'}
                     </button>
                 </div>
             </form>

@@ -53,6 +53,9 @@ export default function Home() {
           *,
           author:profiles!posts_author_id_fkey(username)
         `)
+        // Filter out Study notes (hide if tags contains "Study")
+        // .not('tags', 'cs', '{"Study"}') // cs = contains set (for array)
+        .not('tags', 'cs', '{"Study"}')
         .order('created_at', { ascending: false })
 
       if (error) {
@@ -65,6 +68,7 @@ export default function Home() {
         const { data: tableData, error: tableError } = await supabase
           .from('posts')
           .select('*')
+          .not('tags', 'cs', '{"Study"}')
           .order('created_at', { ascending: false })
 
         if (tableError) console.error('Error fetching posts:', tableError)

@@ -7,6 +7,7 @@ import { Post, Profile } from '@/types'
 import Link from 'next/link'
 import { LogOut, PenLine, Check, AlertCircle } from 'lucide-react'
 import ContributionGraph from '@/components/ContributionGraph'
+import AdminUserList from '@/components/AdminUserList'
 
 function ProfileContent() {
     const router = useRouter()
@@ -209,6 +210,13 @@ function ProfileContent() {
             {user && (
                 <div className="mb-12">
                     <ContributionGraph userId={user.id} />
+                </div>
+            )}
+
+            {/* Admin Dashboard */}
+            {profile?.role === 'admin' && (
+                <div className="mb-12">
+                    <AdminUserList currentUser={user} />
                 </div>
             )}
 

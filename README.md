@@ -5,6 +5,7 @@ A modern, secure, and feature-rich platform for sharing and organizing Capture T
 ## 🚀 Development Roadmap & Features
 
 ### Phase 1: Core Architecture & Authentication (Completed)
+
 - **Project Setup**: Implemented Next.js 15 App Router structure with TypeScript.
 - **Authentication**: Integrated Supabase Auth (Email Magic Link) with GitHub-style profile management.
 - **Security**: Applied Row Level Security (RLS) policies for secure data access.
@@ -15,6 +16,7 @@ A modern, secure, and feature-rich platform for sharing and organizing Capture T
   - Login/Auth Pages
 
 ### Phase 2: Content & Discovery (Completed)
+
 - **Rich Text Editor**:
   - Integrated **Tiptap** editor for writing writeups.
   - Custom image upload extension handling Supabase Storage.
@@ -29,6 +31,7 @@ A modern, secure, and feature-rich platform for sharing and organizing Capture T
   - "Private" post visibility masking.
 
 ### Phase 3: UI Enhancements (Completed)
+
 - **Dark/Light Mode**:
   - Seamless theme switching (System/Light/Dark) using `next-themes`.
   - Consistent styling across all components.
@@ -37,6 +40,7 @@ A modern, secure, and feature-rich platform for sharing and organizing Capture T
   - Updated DB queries for combined filter logic.
 
 ### Phase 4: UX Polish & Social Features (Completed)
+
 - **Interactions**:
   - **Likes & Bookmarks** with optimistic UI updates.
   - Track user engagement on writeups.
@@ -50,6 +54,30 @@ A modern, secure, and feature-rich platform for sharing and organizing Capture T
   - **Contribution Graph**: GitHub-style heatmap on Profile page showing writeup activity over the last year.
 - **Challenge Files**:
   - Dedicated UI for external challenge file links in Write/Edit/View pages.
+
+### Phase 5: Verification & Refinement (Completed)
+
+- **User Profile**:
+  - **Nickname System**: Customizable nicknames with validation (alphanumeric + Korean support).
+  - **Onboarding Flow**: Redirect new users to nickname setup page upon first login.
+- **Content Management**:
+  - **Secure Deletion**: RLS-enforced post deletion with double-check confirmation (`window.confirm`).
+  - **Markdown Import**: Capability to import `.md` files directly into the editor (Title parsing + HTML conversion).
+- **Security**:
+  - **Strict RLS**: Profile updates and Post deletions are strictly scoped to `auth.uid()`.
+  - **Safe Redirects**: Automatic handling of `localhost` vs Production URL for authentication redirects.
+
+### Phase 6: Study Rooms & Community Layout (Current)
+
+- **Study Rooms**:
+  - Dedicated "Study Room" spaces for fields like Web, Pwn, Crypto.
+  - Sidebar navigation for quick access to rooms.
+  - **Tag-based Identification**: Automated `#Study` tag system allows flexible semester notation (e.g., "2026 1st Semester") while maintaining correct categorization.
+- **Layout Overhaul**:
+  - **Sidebar Navigation**: Fixed left-side navigation bar for better accessibility.
+  - **Role Management**: 3-tier system (User/Manager/Admin) for community management. Admins can manage user roles via the Profile dashboard.
+  - **Category Management**: Dynamic addition of new study fields by Managers/Admins directly from the sidebar.
+  - **Enhanced Search**: Unified search functionality that simultaneously queries post titles and author names, powered by a custom SQL View.
 
 ## 🛠 Tech Stack
 

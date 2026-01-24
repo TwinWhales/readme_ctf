@@ -41,9 +41,9 @@ export default function Navbar() {
             setIsSearching(true)
             import('@/lib/supabase').then(async ({ supabase }) => {
                 const { data } = await supabase
-                    .from('posts')
-                    .select('id, title, ctf_name, category')
-                    .ilike('title', `%${query}%`)
+                    .from('posts_view')
+                    .select('id, title, ctf_name, category, username')
+                    .or(`title.ilike.%${query}%,username.ilike.%${query}%`)
                     .limit(5)
 
                 setResults(data || [])

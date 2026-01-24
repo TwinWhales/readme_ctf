@@ -63,7 +63,8 @@ function SearchContent() {
                 .order('created_at', { ascending: false })
 
             if (query) {
-                dbQuery = dbQuery.ilike('title', `%${query}%`)
+                // Search title OR username
+                dbQuery = dbQuery.or(`title.ilike.%${query}%,username.ilike.%${query}%`)
             }
 
             if (filters.tag) {
@@ -229,8 +230,10 @@ function SearchContent() {
                                         {post.title}
                                     </h2>
 
-                                    <div className="text-sm text-muted-foreground mb-4 line-clamp-1">
-                                        {post.ctf_name}
+                                    <div className="text-sm text-muted-foreground mb-4 line-clamp-1 flex items-center gap-2">
+                                        <span className="font-semibold text-foreground/80">{post.username || post.author?.username || 'Anonymous'}</span>
+                                        <span>&bull;</span>
+                                        <span>{post.ctf_name}</span>
                                     </div>
 
                                     {post.tags && post.tags.length > 0 && (

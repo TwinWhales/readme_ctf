@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/theme-provider"
 import Footer from "@/components/Footer";
+import Sidebar from "@/components/Sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,9 +28,14 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="min-h-screen">
-            {children}
-          </main>
+          <div className="flex min-h-[calc(100vh-4rem)]">
+            <Sidebar />
+            <div className="flex-1 w-full">
+              <main className="container mx-auto max-w-7xl px-4 py-8">
+                {children}
+              </main>
+            </div>
+          </div>
           <Footer />
         </ThemeProvider>
       </body>

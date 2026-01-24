@@ -24,12 +24,12 @@ function PostHeaders({ content }: { content: string }) {
       {headers.map((h, i) => (
         <div
           key={i}
-          className={`text-gray-400 truncate ${
+          className={`text-muted-foreground truncate ${
             h.level === "1"
-              ? "text-sm font-semibold text-gray-300"
+              ? "text-sm font-semibold text-foreground"
               : h.level === "2"
-              ? "text-xs font-medium pl-2 border-l-2 border-gray-700"
-              : "text-xs pl-3 border-l border-gray-800"
+              ? "text-xs font-medium pl-2 border-l-2 border-border"
+              : "text-xs pl-3 border-l border-border"
           }`}
         >
           {h.text}
@@ -122,7 +122,7 @@ export default function StudyCategoryPage({ params }: { params: Promise<{ catego
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-64 bg-gray-900 border border-gray-800 rounded-lg animate-pulse"
+              className="h-64 bg-muted/50 border border-border rounded-lg animate-pulse"
             ></div>
           ))}
         </div>
@@ -211,10 +211,10 @@ export default function StudyCategoryPage({ params }: { params: Promise<{ catego
         ))}
 
         {(!posts || posts.length === 0) && (
-            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-gray-800 rounded-lg bg-gray-900/50">
-                <BookOpen className="h-12 w-12 text-gray-700 mb-4" /> 
-                <h3 className="text-lg font-medium text-gray-400">No study notes found</h3>
-                <p className="text-gray-500 mt-2 max-w-sm">
+            <div className="col-span-full flex flex-col items-center justify-center py-12 text-center border-2 border-dashed border-border rounded-lg bg-card text-card-foreground shadow-sm">
+                <BookOpen className="h-12 w-12 text-muted-foreground mb-4" /> 
+                <h3 className="text-lg font-medium text-foreground">No study notes found</h3>
+                <p className="text-muted-foreground mt-2 max-w-sm">
                     Be the first to share your knowledge in the {isAll ? "" : category} room!
                 </p>
             </div>

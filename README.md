@@ -34,7 +34,7 @@ A modern, secure, and feature-rich platform for sharing and organizing Capture T
 
 - **Dark/Light Mode**:
   - Seamless theme switching (System/Light/Dark) using `next-themes`.
-  - Consistent styling across all components.
+  - **Robust Theming**: Re-architected CSS with explicit variable overrides in `globals.css` to guarantee correct color application (e.g., specific Light/Dark mode code block colors).
 - **Advanced Filtering**:
   - Added **Category** filtering (Web, Pwn, Rev, etc.) to the search system.
   - Updated DB queries for combined filter logic.

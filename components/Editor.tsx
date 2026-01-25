@@ -45,12 +45,12 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
-                    class: 'text-blue-400 underline',
+                    class: 'underline underline-offset-4',
                 },
             }),
             Image.configure({
                 HTMLAttributes: {
-                    class: 'rounded-lg border border-gray-700 max-w-full',
+                    class: 'rounded-lg border border-border max-w-full',
                 },
             }),
         ],
@@ -59,7 +59,7 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
         immediatelyRender: false,
         editorProps: {
             attributes: {
-                class: 'prose prose-invert max-w-none focus:outline-none min-h-[300px] p-4',
+                class: 'prose max-w-none focus:outline-none min-h-[300px] p-4',
             },
             handleDrop: (view, event, slice, moved) => {
                 if (!moved && event.dataTransfer && event.dataTransfer.files && event.dataTransfer.files.length > 0) {

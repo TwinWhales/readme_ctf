@@ -4,7 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
-import { Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Link as LinkIcon, Image as ImageIcon, Undo, Redo, FileCode } from 'lucide-react'
+import { Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Link as LinkIcon, Image as ImageIcon, Undo, Redo, FileCode, ImagePlus } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useCallback, useEffect } from 'react'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
@@ -98,6 +98,7 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 const items = event.clipboardData?.items
                 if (items) {
                     for (const item of items) {
+                        // 1. Handle File Paste (Existing)
                         if (item.type.indexOf('image') === 0) {
                             event.preventDefault()
                             const file = item.getAsFile()
@@ -111,6 +112,21 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                                     }
                                 })
                             }
+                            return true
+                        }
+                    }
+                    
+                    // 2. Handle Text Paste (New: URL Detection)
+                    const text = event.clipboardData?.getData('text/plain')
+                    if (text) {
+                        // Check if text is a valid Image URL (simple regex for common extensions)
+                        const imageRegex = /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|svg|webp))/i
+                        if (imageRegex.test(text)) {
+                            event.preventDefault()
+                            const { schema } = view.state
+                            const node = schema.nodes.image.create({ src: text.trim() })
+                            const transaction = view.state.tr.replaceSelectionWith(node)
+                            view.dispatch(transaction)
                             return true
                         }
                     }
@@ -307,10 +323,23 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 <button
                     onClick={addImageButton}
                     className="p-2 rounded hover:bg-muted text-muted-foreground"
-                    title="Image"
+                    title="Upload Image"
                     type="button"
                 >
                     <ImageIcon className="h-4 w-4" />
+                </button>
+                <button
+                    onClick={() => {
+                        const url = window.prompt('Image URL')
+                        if (url) {
+                            editor.chain().focus().setImage({ src: url }).run()
+                        }
+                    }}
+                    className="p-2 rounded hover:bg-muted text-muted-foreground"
+                    title="Insert Image (Link)"
+                    type="button"
+                >
+                    <ImagePlus className="h-4 w-4" />
                 </button>
 
                 <div className="w-px h-6 bg-border mx-1 self-center"></div>

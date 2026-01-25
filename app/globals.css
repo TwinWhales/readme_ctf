@@ -193,3 +193,111 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Syntax Highlighting (highlight.js for Tiptap)                              */
+/* -------------------------------------------------------------------------- */
+
+/* Light Mode (Github Light inspired) */
+.prose pre code .hljs-comment,
+.prose pre code .hljs-quote {
+  color: #6a737d;
+}
+
+.prose pre code .hljs-keyword,
+.prose pre code .hljs-selector-tag {
+  color: #d73a49;
+}
+
+.prose pre code .hljs-string,
+.prose pre code .hljs-doctag,
+.prose pre code .hljs-regexp {
+  color: #032f62;
+}
+
+.prose pre code .hljs-title,
+.prose pre code .hljs-section,
+.prose pre code .hljs-selector-id {
+  color: #6f42c1;
+}
+
+.prose pre code .hljs-title.class_,
+.prose pre code .hljs-class .hljs-title {
+  color: #6f42c1;
+}
+
+.prose pre code .hljs-variable,
+.prose pre code .hljs-template-variable {
+  color: #005cc5;
+}
+
+.prose pre code .hljs-type,
+.prose pre code .hljs-built_in {
+  color: #005cc5;
+}
+
+.prose pre code .hljs-number,
+.prose pre code .hljs-literal {
+  color: #005cc5;
+}
+
+.prose pre code .hljs-tag,
+.prose pre code .hljs-name {
+  color: #22863a;
+}
+
+.prose pre code .hljs-attr {
+  color: #6f42c1;
+}
+
+/* Dark Mode (One Dark / Atom inspired) */
+.dark .prose pre code .hljs-comment,
+.dark .prose pre code .hljs-quote {
+  color: #7f848e; /* Gray comment */
+}
+
+.dark .prose pre code .hljs-keyword,
+.dark .prose pre code .hljs-selector-tag {
+  color: #c678dd; /* Purple keyword */
+}
+
+.dark .prose pre code .hljs-string,
+.dark .prose pre code .hljs-doctag,
+.dark .prose pre code .hljs-regexp {
+  color: #98c379; /* Green string */
+}
+
+.dark .prose pre code .hljs-title,
+.dark .prose pre code .hljs-section,
+.dark .prose pre code .hljs-selector-id {
+  color: #61afef; /* Blue title */
+}
+
+.dark .prose pre code .hljs-title.class_,
+.dark .prose pre code .hljs-class .hljs-title {
+  color: #e5c07b; /* Yellow/Gold class */
+}
+
+.dark .prose pre code .hljs-variable,
+.dark .prose pre code .hljs-template-variable {
+  color: #e06c75; /* Red variable */
+}
+
+.dark .prose pre code .hljs-type,
+.dark .prose pre code .hljs-built_in {
+  color: #e5c07b; /* Yellow type/builtin */
+}
+
+.dark .prose pre code .hljs-number,
+.dark .prose pre code .hljs-literal {
+  color: #d19a66; /* Orange number */
+}
+
+.dark .prose pre code .hljs-tag,
+.dark .prose pre code .hljs-name {
+  color: #e06c75; /* Red tag */
+}
+
+.dark .prose pre code .hljs-attr {
+  color: #d19a66; /* Orange attr */
+}

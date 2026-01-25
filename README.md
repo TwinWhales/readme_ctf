@@ -20,7 +20,10 @@ A modern, secure, and feature-rich platform for sharing and organizing Capture T
 - **Rich Text Editor**:
   - Integrated **Tiptap** editor for writing writeups.
   - Custom image upload extension handling Supabase Storage.
-  - Syntax highlighting for code blocks (highlight.js).
+  - **Smart Syntax Highlighting**:
+    - Powered by `highlight.js` (lowlight) with support for 35+ common languages.
+    - **Language Selector**: UI toolbar dropdown to explicitly set code block language.
+    - **Auto-detection**: Markdown shortcuts (e.g., \`\`\`py\`) automatically trigger the correct highlighting.
 - **Search System**:
   - Dedicated Search Page with filtering by **Tags** and **CTF Name**.
   - Real-time "Live Search" dropdown in the navigation bar.

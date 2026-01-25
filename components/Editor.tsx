@@ -4,9 +4,14 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import Link from '@tiptap/extension-link'
-import { Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Link as LinkIcon, Image as ImageIcon, Undo, Redo } from 'lucide-react'
+import { Bold, Italic, Strikethrough, Code, Heading1, Heading2, Heading3, List, ListOrdered, Quote, Link as LinkIcon, Image as ImageIcon, Undo, Redo, FileCode } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { useCallback, useEffect } from 'react'
+import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import { common, createLowlight } from 'lowlight'
+
+// Initialize lowlight with common languages
+const lowlight = createLowlight(common)
 
 interface EditorProps {
     content: string
@@ -41,7 +46,14 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
 
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                codeBlock: false,
+            }),
+            CodeBlockLowlight.configure({
+                lowlight,
+                // Default language class prefix
+                defaultLanguage: 'plaintext',
+            }),
             Link.configure({
                 openOnClick: false,
                 HTMLAttributes: {
@@ -192,6 +204,33 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 >
                     <Code className="h-4 w-4" />
                 </button>
+
+                {/* Code Block Button */}
+                <button
+                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                    disabled={!editor.can().chain().focus().toggleCodeBlock().run()}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('codeBlock') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
+                    title="Code Block"
+                    type="button"
+                >
+                    <FileCode className="h-4 w-4" />
+                </button>
+
+                {/* Language Selector (Visible only when code block is active) */}
+                {editor.isActive('codeBlock') && (
+                    <select
+                        className="h-8 text-xs border border-input rounded bg-background px-2 py-1 max-w-[100px]"
+                        value={editor.getAttributes('codeBlock').language || 'plaintext'}
+                        onChange={(event) => editor.chain().focus().setCodeBlock({ language: event.target.value }).run()}
+                    >
+                        <option value="plaintext">Text</option>
+                        {Object.keys(common).map((lang) => (
+                            <option key={lang} value={lang}>
+                                {lang}
+                            </option>
+                        ))}
+                    </select>
+                )}
 
                 <div className="w-px h-6 bg-border mx-1 self-center"></div>
 

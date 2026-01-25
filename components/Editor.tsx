@@ -116,6 +116,14 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                     }
                 }
                 return false
+            },
+            handleKeyDown: (view, event) => {
+                if (event.key === 'Tab' && editor?.isActive('codeBlock')) {
+                    event.preventDefault()
+                    editor.commands.insertContent('    ')
+                    return true
+                }
+                return false
             }
         },
         onUpdate: ({ editor }) => {

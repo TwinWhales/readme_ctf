@@ -132,21 +132,21 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Title</label>
                         <input
                             type="text"
                             required
-                            className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                            className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground"
                             value={formData.title}
                             onChange={e => setFormData({ ...formData, title: e.target.value })}
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">CTF Name</label>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">CTF Name</label>
                         <input
                             type="text"
-                            className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                            className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground"
                             placeholder="e.g. DEFCON 2024"
                             value={formData.ctf_name}
                             onChange={e => setFormData({ ...formData, ctf_name: e.target.value })}
@@ -156,11 +156,11 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">
                             Category
                         </label>
                         <select
-                            className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                            className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground"
                             value={formData.category}
                             onChange={e => setFormData({ ...formData, category: e.target.value })}
                         >
@@ -172,13 +172,13 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">
                             Tags (comma separated)
                         </label>
                         <div className="relative">
                             <input
                                 type="text"
-                                className={`w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none ${isStudy ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                className={`w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground ${isStudy ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="xss, sqli, heap"
                                 value={formData.tags}
                                 onChange={e => setFormData({ ...formData, tags: e.target.value })}
@@ -195,10 +195,10 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Challenge File URL (Optional)</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">Challenge File URL (Optional)</label>
                     <input
                         type="url"
-                        className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                        className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground"
                         placeholder="https://example.com/challenge.zip"
                         value={formData.file_url}
                         onChange={e => setFormData({ ...formData, file_url: e.target.value })}
@@ -206,7 +206,7 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Content (Rich Text)</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">Content (Rich Text)</label>
                     <Editor
                         content={formData.content}
                         onChange={html => setFormData({ ...formData, content: html })}
@@ -217,11 +217,11 @@ export default function EditPage({ params }: { params: Promise<{ id: string }> }
                     <input
                         type="checkbox"
                         id="is_public"
-                        className="rounded bg-gray-900 border-gray-800 text-blue-600 focus:ring-blue-500"
+                        className="rounded bg-background border-input text-primary focus:ring-primary"
                         checked={formData.is_public}
                         onChange={e => setFormData({ ...formData, is_public: e.target.checked })}
                     />
-                    <label htmlFor="is_public" className="text-sm font-medium text-gray-300">
+                    <label htmlFor="is_public" className="text-sm font-medium text-muted-foreground">
                         Make this post public
                     </label>
                 </div>

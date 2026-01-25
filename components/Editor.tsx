@@ -154,12 +154,12 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
     }
 
     return (
-        <div className="border border-gray-800 rounded-lg bg-gray-950 overflow-hidden">
-            <div className="flex flex-wrap gap-1 p-2 border-b border-gray-800 bg-gray-900/50">
+        <div className="border border-input rounded-lg bg-background overflow-hidden">
+            <div className="flex flex-wrap gap-1 p-2 border-b border-input bg-muted/30">
                 <button
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     disabled={!editor.can().chain().focus().toggleBold().run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('bold') ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('bold') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Bold"
                     type="button" // Prevent form submission
                 >
@@ -168,7 +168,7 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 <button
                     onClick={() => editor.chain().focus().toggleItalic().run()}
                     disabled={!editor.can().chain().focus().toggleItalic().run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('italic') ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('italic') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Italic"
                     type="button"
                 >
@@ -177,7 +177,7 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 <button
                     onClick={() => editor.chain().focus().toggleStrike().run()}
                     disabled={!editor.can().chain().focus().toggleStrike().run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('strike') ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('strike') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Strikethrough"
                     type="button"
                 >
@@ -186,18 +186,18 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 <button
                     onClick={() => editor.chain().focus().toggleCode().run()}
                     disabled={!editor.can().chain().focus().toggleCode().run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('code') ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('code') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Inline Code"
                     type="button"
                 >
                     <Code className="h-4 w-4" />
                 </button>
 
-                <div className="w-px h-6 bg-gray-800 mx-1 self-center"></div>
+                <div className="w-px h-6 bg-border mx-1 self-center"></div>
 
                 <button
                     onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('heading', { level: 1 }) ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('heading', { level: 1 }) ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Heading 1"
                     type="button"
                 >
@@ -205,7 +205,7 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('heading', { level: 2 }) ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('heading', { level: 2 }) ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Heading 2"
                     type="button"
                 >
@@ -213,18 +213,18 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('heading', { level: 3 }) ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('heading', { level: 3 }) ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Heading 3"
                     type="button"
                 >
                     <Heading3 className="h-4 w-4" />
                 </button>
 
-                <div className="w-px h-6 bg-gray-800 mx-1 self-center"></div>
+                <div className="w-px h-6 bg-border mx-1 self-center"></div>
 
                 <button
                     onClick={() => editor.chain().focus().toggleBulletList().run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('bulletList') ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('bulletList') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Bullet List"
                     type="button"
                 >
@@ -232,7 +232,7 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('orderedList') ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('orderedList') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Ordered List"
                     type="button"
                 >
@@ -240,18 +240,18 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 </button>
                 <button
                     onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('blockquote') ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('blockquote') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Blockquote"
                     type="button"
                 >
                     <Quote className="h-4 w-4" />
                 </button>
 
-                <div className="w-px h-6 bg-gray-800 mx-1 self-center"></div>
+                <div className="w-px h-6 bg-border mx-1 self-center"></div>
 
                 <button
                     onClick={setLink}
-                    className={`p-2 rounded hover:bg-gray-800 ${editor.isActive('link') ? 'bg-gray-800 text-white' : 'text-gray-400'}`}
+                    className={`p-2 rounded hover:bg-muted ${editor.isActive('link') ? 'bg-muted text-foreground' : 'text-muted-foreground'}`}
                     title="Link"
                     type="button"
                 >
@@ -259,19 +259,19 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 </button>
                 <button
                     onClick={addImageButton}
-                    className="p-2 rounded hover:bg-gray-800 text-gray-400"
+                    className="p-2 rounded hover:bg-muted text-muted-foreground"
                     title="Image"
                     type="button"
                 >
                     <ImageIcon className="h-4 w-4" />
                 </button>
 
-                <div className="w-px h-6 bg-gray-800 mx-1 self-center"></div>
+                <div className="w-px h-6 bg-border mx-1 self-center"></div>
 
                 <button
                     onClick={() => editor.chain().focus().undo().run()}
                     disabled={!editor.can().chain().focus().undo().run()}
-                    className="p-2 rounded hover:bg-gray-800 text-gray-400 disabled:opacity-50"
+                    className="p-2 rounded hover:bg-muted text-muted-foreground disabled:opacity-50"
                     title="Undo"
                     type="button"
                 >
@@ -280,7 +280,7 @@ export default function Editor({ content, onChange, editable = true }: EditorPro
                 <button
                     onClick={() => editor.chain().focus().redo().run()}
                     disabled={!editor.can().chain().focus().redo().run()}
-                    className="p-2 rounded hover:bg-gray-800 text-gray-400 disabled:opacity-50"
+                    className="p-2 rounded hover:bg-muted text-muted-foreground disabled:opacity-50"
                     title="Redo"
                     type="button"
                 >

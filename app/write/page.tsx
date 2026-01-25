@@ -188,11 +188,11 @@ export default function WritePage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Title</label>
                         <input
                             type="text"
                             required
-                            className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                            className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground placeholder:text-muted-foreground"
                             value={formData.title}
                             onChange={e => setFormData({ ...formData, title: e.target.value })}
                         />
@@ -200,10 +200,10 @@ export default function WritePage() {
 
                     {postType === 'writeup' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-400 mb-1">CTF Name</label>
+                            <label className="block text-sm font-medium text-muted-foreground mb-1">CTF Name</label>
                             <input
                                 type="text"
-                                className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                                className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground placeholder:text-muted-foreground"
                                 placeholder="e.g. DEFCON 2024"
                                 value={formData.ctf_name}
                                 onChange={e => setFormData({ ...formData, ctf_name: e.target.value })}
@@ -215,7 +215,7 @@ export default function WritePage() {
                             <label className="block text-sm font-medium text-gray-400 mb-1">Semester / Period</label>
                              <input
                                 type="text"
-                                className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                                className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground placeholder:text-muted-foreground"
                                 value={formData.ctf_name}
                                 onChange={e => setFormData({ ...formData, ctf_name: e.target.value })}
                                 placeholder="e.g. 2025 1st Semester"
@@ -226,9 +226,9 @@ export default function WritePage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Category (Room)</label>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Category (Room)</label>
                         <select
-                            className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                            className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground"
                             value={formData.category}
                             onChange={e => setFormData({ ...formData, category: e.target.value })}
                         >
@@ -240,11 +240,11 @@ export default function WritePage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-1">Tags (comma separated)</label>
+                        <label className="block text-sm font-medium text-muted-foreground mb-1">Tags (comma separated)</label>
                         <div className="relative">
                             <input
                                 type="text"
-                                className={`w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none ${postType === 'study' ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                className={`w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground placeholder:text-muted-foreground ${postType === 'study' ? 'opacity-50 cursor-not-allowed' : ''}`}
                                 placeholder="xss, sqli, heap"
                                 value={formData.tags}
                                 onChange={e => setFormData({ ...formData, tags: e.target.value })}
@@ -261,10 +261,10 @@ export default function WritePage() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Challenge File URL (Optional)</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">Challenge File URL (Optional)</label>
                     <input
                         type="url"
-                        className="w-full bg-gray-900 border border-gray-800 rounded px-3 py-2 focus:border-blue-500 focus:outline-none"
+                        className="w-full bg-background border border-input rounded px-3 py-2 focus:border-primary focus:outline-none text-foreground placeholder:text-muted-foreground"
                         placeholder="https://example.com/challenge.zip"
                         value={formData.file_url}
                         onChange={e => setFormData({ ...formData, file_url: e.target.value })}
@@ -272,7 +272,7 @@ export default function WritePage() {
                 </div>
 
                 <div>
-                    <label className="block text-sm font-medium text-gray-400 mb-1">Content (Rich Text)</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-1">Content (Rich Text)</label>
                     <Editor
                         content={formData.content}
                         onChange={html => setFormData({ ...formData, content: html })}
@@ -287,7 +287,7 @@ export default function WritePage() {
                         checked={formData.is_public}
                         onChange={e => setFormData({ ...formData, is_public: e.target.checked })}
                     />
-                    <label htmlFor="is_public" className="text-sm font-medium text-gray-300">
+                    <label htmlFor="is_public" className="text-sm font-medium text-muted-foreground">
                         Make this post public
                     </label>
                 </div>
@@ -296,7 +296,7 @@ export default function WritePage() {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-6 rounded transition-colors disabled:opacity-50"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2 px-6 rounded transition-colors disabled:opacity-50"
                     >
                         {loading ? 'Publishing...' : 'Publish'}
                     </button>
